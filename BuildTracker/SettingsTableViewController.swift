@@ -1,5 +1,5 @@
 //
-//  SecondViewController.swift
+//  SettingsTableViewController.swift
 //  BuildTracker
 //
 //  Created by Christopher Truman on 3/30/20.
@@ -8,13 +8,12 @@
 
 import UIKit
 
-class SecondViewController: UIViewController {
+class SettingsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
 
+    
 
 }
-
