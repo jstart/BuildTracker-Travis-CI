@@ -3,12 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		230A0C4924367977006849DF /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230A0C4824367977006849DF /* LoginViewController.swift */; };
 		231F58F62433EE37000079B0 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F58F52433EE37000079B0 /* Image.swift */; };
 		233A9C2124348C1900A28D0F /* Secure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233A9C2024348C1900A28D0F /* Secure.swift */; };
+		233A9C25243491EE00A28D0F /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233A9C24243491EE00A28D0F /* Layout.swift */; };
+		233A9C272434921900A28D0F /* URLError+Offline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233A9C262434921900A28D0F /* URLError+Offline.swift */; };
+		233A9C2B243514FD00A28D0F /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233A9C2A243514FD00A28D0F /* AppInfo.swift */; };
+		2379B05D243D690100F53EC3 /* SearchRepoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2379B05C243D690100F53EC3 /* SearchRepoTableViewController.swift */; };
 		239202E62431F77500BA33E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239202E52431F77500BA33E6 /* AppDelegate.swift */; };
 		239202E82431F77500BA33E6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239202E72431F77500BA33E6 /* SceneDelegate.swift */; };
 		239202EA2431F77500BA33E6 /* BuildTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239202E92431F77500BA33E6 /* BuildTableViewController.swift */; };
@@ -26,9 +31,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		230A0C4824367977006849DF /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = BuildTracker/LoginViewController.swift; sourceTree = SOURCE_ROOT; };
 		231F58F52433EE37000079B0 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		233A9C2024348C1900A28D0F /* Secure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secure.swift; sourceTree = "<group>"; };
-		239202E22431F77500BA33E6 /* BuildTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BuildTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		233A9C24243491EE00A28D0F /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		233A9C262434921900A28D0F /* URLError+Offline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLError+Offline.swift"; sourceTree = "<group>"; };
+		233A9C2A243514FD00A28D0F /* AppInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		2379B05C243D690100F53EC3 /* SearchRepoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchRepoTableViewController.swift; sourceTree = "<group>"; };
+		239202E22431F77500BA33E6 /* Build Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Build Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		239202E52431F77500BA33E6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		239202E72431F77500BA33E6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		239202E92431F77500BA33E6 /* BuildTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildTableViewController.swift; sourceTree = "<group>"; };
@@ -41,6 +51,9 @@
 		239202FE2432BF5200BA33E6 /* AccountsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsTableViewController.swift; sourceTree = "<group>"; };
 		239203052432E72100BA33E6 /* Reusable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
 		239203092432E9A200BA33E6 /* AddRepoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRepoTableViewController.swift; sourceTree = "<group>"; };
+		23A8834E24A33EB50097BE36 /* QuickLookThumbnailing.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLookThumbnailing.framework; path = System/Library/Frameworks/QuickLookThumbnailing.framework; sourceTree = SDKROOT; };
+		23A8836024A33ED50097BE36 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		23A8836224A33ED50097BE36 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		23E8B867243403E200B970EE /* RepoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepoTableViewController.swift; sourceTree = "<group>"; };
 		23E8B8692434045B00B970EE /* RepoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoStore.swift; sourceTree = "<group>"; };
 		23E8B86C24343E2100B970EE /* TravisModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravisModels.swift; sourceTree = "<group>"; };
@@ -57,10 +70,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		230A0C4A24367982006849DF /* App & Scene Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				239202E52431F77500BA33E6 /* AppDelegate.swift */,
+				239202E72431F77500BA33E6 /* SceneDelegate.swift */,
+			);
+			path = "App & Scene Delegate";
+			sourceTree = "<group>";
+		};
+		230A0C4B243679A4006849DF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				239202ED2431F77500BA33E6 /* Main.storyboard */,
+				239202F02431F77800BA33E6 /* Assets.xcassets */,
+				239202F22431F77800BA33E6 /* LaunchScreen.storyboard */,
+				239202F52431F77800BA33E6 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		239202D92431F77500BA33E6 = {
 			isa = PBXGroup;
 			children = (
 				239202E42431F77500BA33E6 /* BuildTracker */,
+				23A8834D24A33EB50097BE36 /* Frameworks */,
 				239202E32431F77500BA33E6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,7 +102,7 @@
 		239202E32431F77500BA33E6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				239202E22431F77500BA33E6 /* BuildTracker.app */,
+				239202E22431F77500BA33E6 /* Build Tracker.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,17 +113,15 @@
 				23E8B86B24343DE900B970EE /* Models */,
 				239203042432E71400BA33E6 /* Extensions */,
 				239202FB2431F78000BA33E6 /* Services */,
-				239202E52431F77500BA33E6 /* AppDelegate.swift */,
-				239202E72431F77500BA33E6 /* SceneDelegate.swift */,
-				239202E92431F77500BA33E6 /* BuildTableViewController.swift */,
-				239202EB2431F77500BA33E6 /* SettingsTableViewController.swift */,
+				230A0C4A24367982006849DF /* App & Scene Delegate */,
 				239203092432E9A200BA33E6 /* AddRepoTableViewController.swift */,
+				239202E92431F77500BA33E6 /* BuildTableViewController.swift */,
+				230A0C4824367977006849DF /* LoginViewController.swift */,
+				239202EB2431F77500BA33E6 /* SettingsTableViewController.swift */,
 				23E8B867243403E200B970EE /* RepoTableViewController.swift */,
+				2379B05C243D690100F53EC3 /* SearchRepoTableViewController.swift */,
 				239202FE2432BF5200BA33E6 /* AccountsTableViewController.swift */,
-				239202ED2431F77500BA33E6 /* Main.storyboard */,
-				239202F02431F77800BA33E6 /* Assets.xcassets */,
-				239202F22431F77800BA33E6 /* LaunchScreen.storyboard */,
-				239202F52431F77800BA33E6 /* Info.plist */,
+				230A0C4B243679A4006849DF /* Resources */,
 			);
 			path = BuildTracker;
 			sourceTree = "<group>";
@@ -107,10 +139,23 @@
 		239203042432E71400BA33E6 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				233A9C2A243514FD00A28D0F /* AppInfo.swift */,
+				233A9C262434921900A28D0F /* URLError+Offline.swift */,
+				233A9C24243491EE00A28D0F /* Layout.swift */,
 				239203052432E72100BA33E6 /* Reusable.swift */,
 				231F58F52433EE37000079B0 /* Image.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		23A8834D24A33EB50097BE36 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				23A8834E24A33EB50097BE36 /* QuickLookThumbnailing.framework */,
+				23A8836024A33ED50097BE36 /* WidgetKit.framework */,
+				23A8836224A33ED50097BE36 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		23E8B86B24343DE900B970EE /* Models */ = {
@@ -138,7 +183,7 @@
 			);
 			name = BuildTracker;
 			productName = BuildTracker;
-			productReference = 239202E22431F77500BA33E6 /* BuildTracker.app */;
+			productReference = 239202E22431F77500BA33E6 /* Build Tracker.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -147,8 +192,8 @@
 		239202DA2431F77500BA33E6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1140;
+				LastSwiftUpdateCheck = 1200;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = truman;
 				TargetAttributes = {
 					239202E12431F77500BA33E6 = {
@@ -157,7 +202,7 @@
 				};
 			};
 			buildConfigurationList = 239202DD2431F77500BA33E6 /* Build configuration list for PBXProject "BuildTracker" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 11.4";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -196,13 +241,18 @@
 				231F58F62433EE37000079B0 /* Image.swift in Sources */,
 				23E8B86D24343E2100B970EE /* TravisModels.swift in Sources */,
 				23E8B86A2434045B00B970EE /* RepoStore.swift in Sources */,
+				233A9C272434921900A28D0F /* URLError+Offline.swift in Sources */,
+				233A9C2B243514FD00A28D0F /* AppInfo.swift in Sources */,
 				239202FF2432BF5200BA33E6 /* AccountsTableViewController.swift in Sources */,
 				239202EC2431F77500BA33E6 /* SettingsTableViewController.swift in Sources */,
 				239202EA2431F77500BA33E6 /* BuildTableViewController.swift in Sources */,
 				233A9C2124348C1900A28D0F /* Secure.swift in Sources */,
 				239202E62431F77500BA33E6 /* AppDelegate.swift in Sources */,
+				2379B05D243D690100F53EC3 /* SearchRepoTableViewController.swift in Sources */,
 				23E8B868243403E200B970EE /* RepoTableViewController.swift in Sources */,
 				239202FD2431F78D00BA33E6 /* GithubService.swift in Sources */,
+				230A0C4924367977006849DF /* LoginViewController.swift in Sources */,
+				233A9C25243491EE00A28D0F /* Layout.swift in Sources */,
 				239202E82431F77500BA33E6 /* SceneDelegate.swift in Sources */,
 				239203062432E72200BA33E6 /* Reusable.swift in Sources */,
 			);
@@ -256,6 +306,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -316,6 +367,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -348,16 +400,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UD2ZHCNJF8;
-				INFOPLIST_FILE = BuildTracker/Info.plist;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = BuildTracker/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.truman.BuildTracker;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = truman.BuildTracker.Travis;
+				PRODUCT_NAME = "Build Tracker";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -367,16 +424,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UD2ZHCNJF8;
-				INFOPLIST_FILE = BuildTracker/Info.plist;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = PP6S682Z9F;
+				INFOPLIST_FILE = BuildTracker/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.truman.BuildTracker;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = truman.BuildTracker.Travis;
+				PRODUCT_NAME = "Build Tracker";
+				PROVISIONING_PROFILE_SPECIFIER = "Build Tracker Travis CI";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

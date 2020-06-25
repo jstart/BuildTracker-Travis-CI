@@ -13,6 +13,7 @@ class BuildTableViewController: UITableViewController {
     let repo: TravisReposResponse.Repo
 
     var builds: [TravisBuildsResponse.Build]?
+    var commits: [TravisBuildsResponse.Commit]?
 
     init(repo: TravisReposResponse.Repo) {
         self.repo = repo
@@ -57,6 +58,7 @@ class BuildTableViewController: UITableViewController {
             switch result {
             case .success(let response):
                 self.builds = response.builds
+                self.commits = response.commits
                 self.tableView.reloadData()
             case .failure(let error):
                 print(error)
@@ -78,9 +80,17 @@ class BuildTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: BuildTableViewCell = tableView.dequeueReusableCell(for: indexPath)
-        guard let build = builds?[indexPath.row] else { return cell }
-        cell.textLabel?.text = (build.pull_request_title ?? "Triggered by \(build.event_type)")
-        cell.detailTextLabel?.text = build.durationText + ", " + build.finishedText
+        guard let build = builds?[indexPath.row],
+            let commit = commits?.first(where: { $0.id == build.commit_id }) else { return cell }
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.text = (build.pull_request_title ?? "\(commit.message) - Triggered by \(build.event_type)")
+        if build.duration == nil && commit.committed_at == nil {
+            cell.detailTextLabel?.text = "In Progress"
+        } else if commit.committed_at != nil && build.duration == nil && build.started_at != nil {
+            cell.detailTextLabel?.text = build.startedText
+        } else {
+            cell.detailTextLabel?.text = build.durationText + ", " + build.finishedText
+        }
         let boldConfig = UIImage.SymbolConfiguration(weight: .bold).applying(UIImage.SymbolConfiguration(textStyle: .headline))
 
         var imageName = "checkmark.circle.fill"
@@ -92,7 +102,7 @@ class BuildTableViewController: UITableViewController {
         }
         cell.accessoryView = UIImageView(image: UIImage(systemName: imageName, withConfiguration:  boldConfig)?.withRenderingMode(.alwaysTemplate))
 
-        if build.state == "started" {
+        if build.state == "started" || build.state == "created" {
             let activity = UIActivityIndicatorView(style: .medium)
             cell.accessoryView = activity
             activity.startAnimating()

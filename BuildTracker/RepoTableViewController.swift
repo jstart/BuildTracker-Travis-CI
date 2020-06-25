@@ -17,7 +17,7 @@ class RepoTableViewController: UITableViewController {
 
         title = "Repos"
 
-        tableView.register(RepoTableViewCell.self)
+        tableView.register(RepoBuildTableViewCell.self)
         tableView.tableFooterView = UIView()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(startEditing))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addRepo))
@@ -48,6 +48,23 @@ class RepoTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         repoStore.refresh()
         tableView.reloadData()
+        if RepoStore().repos.isEmpty {
+            addRepo()
+            return
+        }
+        GithubService.repos(ids: repoStore.ids, completion: { [weak self] response in
+            switch response {
+            case .success(let repos):
+                self?.repoStore.update(repos.repos)
+                self?.tableView.reloadData()
+            case .failure(let error):
+                print(error)
+            }
+        })
+
+//        GithubService.reposNEW { _ in
+//
+//        }
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -59,10 +76,9 @@ class RepoTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: RepoTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+        let cell: RepoBuildTableViewCell = tableView.dequeueReusableCell(for: indexPath)
         let repo = repoStore.repos[indexPath.row]
-        cell.textLabel?.text = repo.slug
-        cell.detailTextLabel?.text = repo.description
+        cell.configure(repo)
         return cell
     }
 
@@ -94,5 +110,85 @@ class RepoTableViewController: UITableViewController {
             repoStore.remove(repo)
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
+    }
+}
+
+class RepoBuildTableViewCell: UITableViewCell {
+    private let name: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let recentBuild: UILabel = {
+        let label = UILabel()
+        label.textColor = .secondaryLabel
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let recentBuildStatus: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        return imageView
+    }()
+
+    private let disclosureIndicator: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "chevron.right"))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
+
+        contentView.addSubview(recentBuildStatus)
+        recentBuildStatus.pinEdges(to: contentView, edges: .left, inset: 15, active: true)
+        recentBuildStatus.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+
+        contentView.addSubview(disclosureIndicator)
+        disclosureIndicator.pinEdges(to: contentView, edges: .right, inset: 15, active: true)
+        disclosureIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+
+        contentView.addSubview(name)
+        name.pinEdges(to: contentView, edges: .top, inset: 15, active: true)
+        name.leadingAnchor.constraint(equalTo: recentBuildStatus.trailingAnchor, constant: 15).isActive = true
+        name.trailingAnchor.constraint(lessThanOrEqualTo: disclosureIndicator.leadingAnchor, constant: -15).isActive = true
+
+        contentView.addSubview(recentBuild)
+        recentBuild.pinEdges(to: contentView, edges: .bottom, inset: 15, active: true)
+        recentBuild.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 10).isActive = true
+        recentBuild.leadingAnchor.constraint(equalTo: recentBuildStatus.trailingAnchor, constant: 15).isActive = true
+        recentBuild.trailingAnchor.constraint(lessThanOrEqualTo: disclosureIndicator.leadingAnchor, constant: -15).isActive = true
+    }
+
+    func configure(_ repo: TravisReposResponse.Repo) {
+        name.text = repo.slug
+        recentBuild.text = repo.durationText
+
+        var imageName = "checkmark.circle.fill"
+        recentBuildStatus.tintColor = .green
+        if repo.last_build_state == "started" || repo.last_build_state == "created" {
+            imageName = ""
+            let activity = UIActivityIndicatorView(style: .medium)
+            recentBuildStatus.addSubview(activity)
+            activity.startAnimating()
+        } else if repo.last_build_state != "passed" {
+            imageName = "exclamationmark.triangle.fill"
+            recentBuildStatus.tintColor = .red
+        }
+        let boldConfig = UIImage.SymbolConfiguration(weight: .bold).applying(UIImage.SymbolConfiguration(textStyle: .headline))
+        recentBuildStatus.image = UIImage(systemName: imageName, withConfiguration:  boldConfig)?.withRenderingMode(.alwaysTemplate)
+    }
+
+    @objc func showAll() {
+
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

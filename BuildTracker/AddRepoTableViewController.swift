@@ -12,6 +12,7 @@ class AddRepoTableViewController: UITableViewController {
 
     var memberName: String
     var account: TravisAccountsResponse.Account
+    var activeRepos: [TravisReposResponse.Repo]?
     var repos: [TravisReposResponse.Repo]?
 
     init(memberName: String, account: TravisAccountsResponse.Account) {
@@ -19,11 +20,11 @@ class AddRepoTableViewController: UITableViewController {
         self.account = account
         super.init(style: .plain)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(RepoTableViewCell.self)
@@ -35,39 +36,75 @@ class AddRepoTableViewController: UITableViewController {
         title = ""
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.beginRefreshing()
-        GithubService.repos(owner: account.login, memberName: memberName) { [weak self] response in
+
+        GithubService.searchRepos(query: account.login) { [weak self] response in
             guard let self = self else { return }
             switch response {
             case .success(let result):
-                self.repos = result.repos
-                self.repos?.sort(by: {first, second in
-                    return first.last_build_started_at != nil
+                self.activeRepos = result.repos.filter { $0.active == true }
+                self.repos = result.repos.filter { $0.active == false || $0.active == nil }
+                self.activeRepos?.sort(by: { first, second in
+                    guard let firstStarted = first.last_build_started_at else { return false }
+                    guard let secondStarted = second.last_build_started_at else { return false }
+
+                    return firstStarted > secondStarted
                 })
                 self.tableView.reloadData()
             case .failure(let error):
                 print(error)
             }
             self.tableView.refreshControl?.endRefreshing()
-            self.tableView.refreshControl?.isEnabled = false
+            self.tableView.refreshControl = nil
         }
     }
 
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+
+        return section == 0 ? "Active" : "Inactive"
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return activeRepos?.count ?? 0
+        }
         return repos?.count ?? 0
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: RepoTableViewCell = tableView.dequeueReusableCell(for: indexPath)
-        guard let repo = repos?[indexPath.row] else { return cell }
-        cell.textLabel?.text = repo.slug
-        cell.detailTextLabel?.text = repo.description
+        switch indexPath.section {
+        case 0:
+            guard let repo = activeRepos?[indexPath.row] else { return cell }
+            cell.textLabel?.text = repo.slug
+            cell.detailTextLabel?.text = repo.description
+        case 1:
+            guard let repo = repos?[indexPath.row] else { return cell }
+            cell.textLabel?.text = repo.slug
+            cell.detailTextLabel?.text = repo.description
+        default:
+            fatalError()
+        }
+
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let repo = repos?[indexPath.row] else { return }
-        navigationController?.pushViewController(BuildTableViewController(repo: repo), animated: true)
+        var repo: TravisReposResponse.Repo?
+        switch indexPath.section {
+        case 0:
+            repo = activeRepos?[indexPath.row]
+        case 1:
+            repo = repos?[indexPath.row]
+        default:
+            fatalError()
+        }
+        guard let currentRepo = repo else { return }
+        navigationController?.pushViewController(BuildTableViewController(repo: currentRepo), animated: true)
     }
 }
 
@@ -80,5 +117,11 @@ class RepoTableViewCell: UITableViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        textLabel?.text = nil
+        detailTextLabel?.text = nil
     }
 }

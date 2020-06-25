@@ -33,6 +33,12 @@ struct GithubService {
             UserDefaults.standard.set(data, forKey: "TravisToken")
         }
     }
+    static var userAccount: TravisAccountsResponse.Account? {
+        didSet {
+            guard let data = try? JSONEncoder().encode(userAccount) else { return }
+            UserDefaults.standard.set(data, forKey: "UserAccount")
+        }
+    }
 
     static func load() {
         guard let githubTokenData = UserDefaults.standard.object(forKey: "GithubToken") as? Data,
@@ -43,9 +49,11 @@ struct GithubService {
             let travisTokenDefault = try? JSONDecoder().decode(TravisAccessTokenResponse.self, from: travisTokenData) else { return }
         githubToken = githubTokenDefault
         travisToken = travisTokenDefault
-    }
 
-    static var builds: TravisBuildsResponse?
+        guard let userAccountData = UserDefaults.standard.object(forKey: "UserAccount") as? Data else { return }
+        guard let userAccountDefault = try? JSONDecoder().decode(TravisAccountsResponse.Account.self, from: userAccountData) else { return }
+        userAccount = userAccountDefault
+    }
 
     static var startAuthFlow: SFSafariViewController {
         let webVC = SFSafariViewController(url: URL(string: "https://github.com/login/oauth/authorize?allow_signup=false&client_id=\(githubClientID)&state=\(state)&scope=read:org%20repo_deployment%20repo:status%20user:email%20repo")!)
@@ -112,28 +120,69 @@ struct GithubService {
         }).resume()
     }
 
-    static func buildStatus(repoSlug: String, completion: @escaping (Result<TravisBuildsResponse, Error>) -> Void) {
-        let completion: (Result<TravisBuildsResponse, Error>) -> Void = { response in
+    static func accounts(_ completion: @escaping (Result<TravisAccountsResponse, Error>) -> Void) {
+        let completion: (Result<TravisAccountsResponse, Error>) -> Void = { response in
             if case let .success(response) = response {
-                builds = response
+                userAccount = response.accounts.first(where: { $0.type == "user" })
             }
 
             completion(response)
         }
-        travisRequest(path: "repos/\(repoSlug)/builds", completion: completion)
-    }
-
-    static func repos(owner: String, memberName: String, _ completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
-        travisRequest(path: "repos?active=true&owner_name=\(owner)&member=\(memberName)", completion: completion)
-    }
-
-    static func accounts(_ completion: @escaping (Result<TravisAccountsResponse, Error>) -> Void) {
         travisRequest(path: "accounts", completion: completion)
     }
 
-    static func travisRequest<T: Codable>(path: String, completion: @escaping (Result<T, Error>) -> Void) {
+    static func buildStatus(repoSlug: String, completion: @escaping (Result<TravisBuildsResponse, Error>) -> Void) {
+        travisRequest(path: "repos/\(repoSlug)/builds", completion: completion)
+    }
+
+    static func logs(buildID: String, completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(path: "build/\(buildID)/log", completion: completion)
+    }
+
+    static func restart(buildID: String, completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(method: "POST", path: "builds/\(buildID)/restart", completion: completion)
+    }
+
+    static func cancel(buildID: String, completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(method: "POST", path: "builds/\(buildID)/cancel", completion: completion)
+    }
+
+    static func repos(owner: String, memberName: String, _ completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(path: "repos?active=true&slug=\(owner)&member=\(memberName)", completion: completion)
+    }
+
+    static func repos(ids: [String], completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(path: "repos?ids=\(ids.joined(separator: ","))", completion: completion)
+    }
+
+    static func reposNEW(completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(path: "repos?repository.active=true&sort_by=current_build%3Adesc&limit=30&include=build.branch%2Cbuild.commit%2Cbuild.created_by%2Cbuild.request%2Crepository.current_build%2Crepository.default_branch%2Crepository.email_subscribed%2Cowner.github_id%2Cowner.installation", completion: completion)
+    }
+    //https://api.travis-ci.com/repos?repository.active=true&sort_by=current_build%3Adesc&limit=30&include=build.branch%2Cbuild.commit%2Cbuild.created_by%2Cbuild.request%2Crepository.current_build%2Crepository.default_branch%2Crepository.email_subscribed%2Cowner.github_id%2Cowner.installation
+
+    static func searchRepos(query: String, completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else { return }
+        travisRequest(path: "repos?search=\(query)&active=true", completion: completion)
+    }
+
+    static func logs(jobID: String, completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        // {\"log\":{\"id\":292169929,\"job_id\":315546877,\"type\":\"Log\",\"body\":
+        // https://docs.travis-ci.com/api/?http#logs
+        travisRequest(path: "jobs/\(jobID)/log", completion: completion)
+    }
+
+    static func restart(jobID: String, completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(method: "POST", path: "jobs/\(jobID)/restart", completion: completion)
+    }
+
+    static func cancel(jobID: String, completion: @escaping (Result<TravisReposResponse, Error>) -> Void) {
+        travisRequest(method: "POST", path: "jobs/\(jobID)/cancel", completion: completion)
+    }
+
+    static func travisRequest<T: Codable>(method: String =
+    "GET", path: String, completion: @escaping (Result<T, Error>) -> Void) {
         var request = URLRequest(url: URL(string: baseURL + path)!)
-        request.httpMethod = "GET"
+        request.httpMethod = method
 
         request.addValue("token \(travisToken!.access_token)", forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")

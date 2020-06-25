@@ -47,8 +47,35 @@ class RepoStore {
         persist()
     }
 
+    func replace(_ repos: [TravisReposResponse.Repo]) {
+        self.repos = repos
+        persist()
+    }
+
+    func update(_ recentRepos: [TravisReposResponse.Repo]) {
+        for repo in self.repos {
+            guard let recentRepo = recentRepos.first(where: { $0.id == repo.id }) else { continue }
+            repo.last_build_state = recentRepo.last_build_state
+            repo.last_build_duration = recentRepo.last_build_duration
+            repo.last_build_number = recentRepo.last_build_number
+            repo.last_build_started_at = recentRepo.last_build_started_at
+            repo.last_build_finished_at = recentRepo.last_build_finished_at
+            repo.active = recentRepo.active
+        }
+        persist()
+    }
+
     func persist() {
         guard let data = try? JSONEncoder().encode(repos) else { return }
         UserDefaults.standard.set(data, forKey: RepoStore.key)
+    }
+
+    func removeAll(){
+        repos = []
+        persist()
+    }
+
+    var ids: [String] {
+        return repos.map { "\($0.id)" }
     }
 }
