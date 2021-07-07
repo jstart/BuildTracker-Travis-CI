@@ -40,6 +40,16 @@ struct GithubService {
         }
     }
 
+    static func logout() {
+        githubToken = nil
+        UserDefaults.standard.removeObject(forKey: "GithubToken")
+        travisToken = nil
+        UserDefaults.standard.removeObject(forKey: "TravisToken")
+        userAccount = nil
+        UserDefaults.standard.removeObject(forKey: "UserAccount")
+        UserDefaults.standard.synchronize()
+    }
+
     static func load() {
         guard let githubTokenData = UserDefaults.standard.object(forKey: "GithubToken") as? Data,
             let travisTokenData = UserDefaults.standard.object(forKey: "TravisToken") as? Data else {
@@ -87,6 +97,7 @@ struct GithubService {
                 GithubService.travisAuth(token: token)
             } catch {
                 // Parse error handling
+                print(error)
             }
         }).resume()
     }

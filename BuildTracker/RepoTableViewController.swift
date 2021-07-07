@@ -1,5 +1,5 @@
 //
-//  RepoTableViewController .swift
+//  RepoTableViewController.swift
 //  BuildTracker
 //
 //  Created by Christopher Truman on 3/30/20.
@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class RepoTableViewController: UITableViewController {
 
@@ -116,12 +117,18 @@ class RepoTableViewController: UITableViewController {
 class RepoBuildTableViewCell: UITableViewCell {
     private let name: UILabel = {
         let label = UILabel()
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            label.font = .preferredFont(forTextStyle: .largeTitle)
+//        }
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
     private let recentBuild: UILabel = {
         let label = UILabel()
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            label.font = .preferredFont(forTextStyle: .title1)
+//        }
         label.textColor = .secondaryLabel
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -143,7 +150,6 @@ class RepoBuildTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
 
         contentView.addSubview(recentBuildStatus)
         recentBuildStatus.pinEdges(to: contentView, edges: .left, inset: 15, active: true)
@@ -182,10 +188,6 @@ class RepoBuildTableViewCell: UITableViewCell {
         }
         let boldConfig = UIImage.SymbolConfiguration(weight: .bold).applying(UIImage.SymbolConfiguration(textStyle: .headline))
         recentBuildStatus.image = UIImage(systemName: imageName, withConfiguration:  boldConfig)?.withRenderingMode(.alwaysTemplate)
-    }
-
-    @objc func showAll() {
-
     }
 
     required init?(coder: NSCoder) {

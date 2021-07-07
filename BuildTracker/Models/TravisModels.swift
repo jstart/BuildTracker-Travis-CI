@@ -89,17 +89,17 @@ struct TravisReposResponse: Codable {
         var durationText: String {
             if last_build_state == "canceled" {
                 return "Last Build Canceled"
+            } else if last_build_state == "created" {
+                return "Last Build Starting..."
             }
-            guard let duration = last_build_duration else {
-                guard let lastState = last_build_state else { return "" }
-                guard let finished = last_build_started_at else { return "" }
-                let formatter = RelativeDateTimeFormatter()
+            guard let lastState = last_build_state else { return "" }
+            guard let started = last_build_started_at else { return "" }
+            let formatter = RelativeDateTimeFormatter()
+            if lastState == "passed" {
+                guard let finished = last_build_finished_at else { return "" }
                 return "Last Build \(lastState.capitalized) \(formatter.localizedString(for: finished, relativeTo: Date()))"
             }
-            if duration < 60 {
-                return "Duration: \(duration) seconds"
-            }
-            return "Duration: \(duration / 60) minutes"
+            return "Last Build \(lastState.capitalized) \(formatter.localizedString(for: started, relativeTo: Date()))"
         }
     }
     let repos: [Repo]

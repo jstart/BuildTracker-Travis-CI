@@ -35,7 +35,6 @@ class SearchRepoTableViewController: UITableViewController, UISearchBarDelegate 
         searchBar?.autocapitalizationType = .none
         searchBar?.delegate = self
         tableView.tableHeaderView = searchBar
-
     }
 
     override func viewWillAppear(_ animated: Bool) {

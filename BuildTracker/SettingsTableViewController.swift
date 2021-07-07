@@ -85,11 +85,14 @@ private enum Preferences: Int, CaseIterable {
 }
 
 private enum Information: Int, CaseIterable {
+    case travisStatus
     case sendFeedback
     case twitter
 
     var title: String {
         switch self {
+        case .travisStatus:
+            return "Check Travis CI Status (traviscistatus.com)"
         case .sendFeedback:
             return "Send Feedback via Email"
         case .twitter:
@@ -176,8 +179,7 @@ class SettingsTableViewController: UITableViewController, MFMailComposeViewContr
             case .signIn:
                 present(GithubService.startAuthFlow, animated: true, completion: nil)
             case .signOut:
-                GithubService.travisToken = nil
-                GithubService.githubToken = nil
+                GithubService.logout()
                 RepoStore().removeAll()
                 tableView.reloadRows(at: [indexPath], with: .automatic)
             }
@@ -188,6 +190,8 @@ class SettingsTableViewController: UITableViewController, MFMailComposeViewContr
             let row = Information.allCases[indexPath.row]
 
             switch row {
+            case .travisStatus:
+                UIApplication.shared.open(URL(string:"https://www.traviscistatus.com/")!)
             case .sendFeedback:
                 if MFMailComposeViewController.canSendMail() {
                     let mail = MFMailComposeViewController()

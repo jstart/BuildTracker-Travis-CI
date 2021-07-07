@@ -34,7 +34,9 @@ class BuildTableViewController: UITableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            navigationController?.navigationBar.prefersLargeTitles = false
+        }
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
         if RepoStore().contains(repo) {
@@ -82,23 +84,39 @@ class BuildTableViewController: UITableViewController {
         let cell: BuildTableViewCell = tableView.dequeueReusableCell(for: indexPath)
         guard let build = builds?[indexPath.row],
             let commit = commits?.first(where: { $0.id == build.commit_id }) else { return cell }
-        cell.textLabel?.numberOfLines = 0
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            cell.textLabel?.font = .preferredFont(forTextStyle: .largeTitle)
+//        }
+        cell.textLabel?.numberOfLines = 2
         cell.textLabel?.text = (build.pull_request_title ?? "\(commit.message) - Triggered by \(build.event_type)")
+
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            cell.detailTextLabel?.font = .preferredFont(forTextStyle: .title1)
+//        }
+        cell.detailTextLabel?.numberOfLines = 2
         if build.duration == nil && commit.committed_at == nil {
             cell.detailTextLabel?.text = "In Progress"
         } else if commit.committed_at != nil && build.duration == nil && build.started_at != nil {
-            cell.detailTextLabel?.text = build.startedText
+            cell.detailTextLabel?.text = "Committed by: \(commit.author_name)\n\(build.startedText)"
         } else {
-            cell.detailTextLabel?.text = build.durationText + ", " + build.finishedText
+            if build.durationText != "" && build.finishedText != "" {
+                cell.detailTextLabel?.text = "Committed by: \(commit.author_name)\n\(build.durationText), \(build.finishedText)"
+            } else {
+                cell.detailTextLabel?.text = "Committed by: \(commit.author_name)\nBuild Starting"
+            }
         }
         let boldConfig = UIImage.SymbolConfiguration(weight: .bold).applying(UIImage.SymbolConfiguration(textStyle: .headline))
 
         var imageName = "checkmark.circle.fill"
         cell.tintColor = .green
 
-        if build.state != "passed" {
+        if build.state == "failed" {
             imageName = "exclamationmark.triangle.fill"
             cell.tintColor = .red
+        }
+        else if build.state == "canceled" {
+            imageName = "multiply.circle.fill"
+            cell.tintColor = .systemYellow
         }
         cell.accessoryView = UIImageView(image: UIImage(systemName: imageName, withConfiguration:  boldConfig)?.withRenderingMode(.alwaysTemplate))
 
